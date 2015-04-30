@@ -10,10 +10,10 @@
 	<fieldset>
 		<legend>Login Here:</legend>
 		User Name:<br>
-		<input type="text" name="uname" value="Trijit">
+		<input type="text" name="uname" value="admin">
 		<br>
 		Password:<br>
-		<input type="password" name="pass" value="12345">
+		<input type="password" name="pass" value="admin">
 		<br><br>
 		<input type="submit" value="Submit">
 	</fieldset>

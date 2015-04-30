@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="2.5">
 	<display-name>HttpServletRequest</display-name>
 	<servlet>
-		<servlet-name>myservlet</servlet-name>
+		<servlet-name>myservlet</servlet-name>		
 		<servlet-class>devmanuals.servlet.ServletRequestExample</servlet-class>
 	</servlet>
 	<servlet-mapping>
