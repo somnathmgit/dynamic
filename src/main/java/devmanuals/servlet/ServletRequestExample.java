@@ -2,7 +2,7 @@ package devmanuals.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
+import java.net.InetAddress;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,31 +20,32 @@ public class ServletRequestExample extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		try {		
-			PrintWriter out = response.getWriter();
 			String uname = request.getParameter("uname");
 			String pass = request.getParameter("pass");
 			
 			if(uname.equals("admin") && pass.equalsIgnoreCase("admin")) {
-				response.sendRedirect("welcome.jsp");
+				System.out.println("Client IP:: "+ getClientIpAddr(request));
+				String ipAddress = getClientIpAddr(request);
 				
 				InputStream is = ServletRequestExample.class.getClassLoader().getResourceAsStream("AwsCredentials.properties");
-				System.out.println("Inputstream: "+is);
 				AWSCredentials credentials = new PropertiesCredentials(is);
 				AmazonEC2Client amazonEC2Client = new AmazonEC2Client(credentials);
-				out.println("Access Key: "+credentials);
-				out.println("Access Key: "+credentials.getAWSAccessKeyId());
 				IpPermission ipPermission = new IpPermission();
 					    	
-				ipPermission.withIpRanges("111.111.111.111/32", "150.150.150.150/32")
+				ipPermission.withIpRanges(ipAddress + "/32")
 				            .withIpProtocol("tcp")
 				            .withFromPort(22)
 				            .withToPort(22);
-				
+								
 				AuthorizeSecurityGroupIngressRequest authorizeSecurityGroupIngressRequest = new AuthorizeSecurityGroupIngressRequest();			
 					    	
 					authorizeSecurityGroupIngressRequest.withGroupName("somnath-poc-sg").withIpPermissions(ipPermission);
 					amazonEC2Client.authorizeSecurityGroupIngress(authorizeSecurityGroupIngressRequest);
 					
+					response.sendRedirect("welcome.jsp");
+				
+							
+				
 			} else {
 				response.sendRedirect("index.jsp");
 			}
@@ -52,4 +53,15 @@ public class ServletRequestExample extends HttpServlet {
 			ex.printStackTrace();
 		}
 	}
+	
+	public String getClientIpAddr(HttpServletRequest request) {  
+		String ipAddress = null;  
+		try {
+			InetAddress thisIp = InetAddress.getLocalHost();
+			ipAddress = thisIp.getHostAddress();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return ipAddress;	
+    }  
 }
